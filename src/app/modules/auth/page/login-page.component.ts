@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReplaceSpacePipe } from '@shared/pipes/replace-space.pipe';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
@@ -8,14 +9,22 @@ import { ReplaceSpacePipe } from '@shared/pipes/replace-space.pipe';
 })
 export class LoginPageComponent implements OnInit {
 
-  value = 'Hola Mundo'
+  loginForm:FormGroup = new FormGroup({});
 
-  constructor(private replaceSpace:ReplaceSpacePipe) { 
-
-  }
+  constructor(){}
 
   ngOnInit(): void {
-    this.value = this.replaceSpace.transform(this.value, '-');
+      this.loginForm = new FormGroup({
+        email: new FormControl('', [Validators.required, Validators.email ]),
+        password: new FormControl('', [Validators.required, 
+          Validators.minLength(5), 
+          Validators.maxLength(12)])
+      })
+  }
+
+  sendCredentials():void{
+    const body = this.loginForm.value;
+    console.log(body);
   }
   
 }
