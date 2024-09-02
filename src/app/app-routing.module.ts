@@ -11,7 +11,7 @@ const routes: Routes = [
     path: 'task', //TODO: http://localhost:4200/task PRIVADA
     loadChildren: () => import('@modules/task/task.module').then((m) => m.TaskModule),
     canActivate:[
-      validateSessionGuard
+      //validateSessionGuard
     ]
   }
   
