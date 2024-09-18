@@ -1,21 +1,35 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, 
+  Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CookieService } from 'ngx-cookie';
+import { Observable } from 'rxjs';
 
-export const validateSessionGuard: CanActivateFn = (route, state) => {
+@Injectable({
+  providedIn: 'root'
+})
+export class validateSessionGuard implements CanActivate {
+  
+  private cookie:string | null | undefined = this.cookieService.get('token_session');
 
-  const token = localStorage.getItem('authToken');
-  const router = inject(Router);
+  constructor(private router:Router, private cookieService:CookieService){
 
-  const isValidToken = (token: string | null): boolean => {
-    return token !== null && token !== '';
-  };
-
-  if (isValidToken(token)) {
-    console.log('Token: ' + token);
-    return true; //TODO Permite la navegación
-  } else {
-    console.log('Token: ' + token);
-    router.navigate(['/', 'auth', 'login']);
-    return false; //TODO Bloquea la navegación
   }
-};
+
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    return this.checkCookie();
+  }
+
+  private checkCookie():boolean{
+    console.log('👌👌', this.cookie)
+
+    if(!this.cookie){
+      this.router.navigate(['/','auth','login'])
+      return false;
+    }
+    
+    return true;
+  }
+  
+}
